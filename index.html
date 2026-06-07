@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>หน้าแรก</title>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&family=Sarabun:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f13;
+    --surface: rgba(255,255,255,0.06);
+    --surface-hover: rgba(255,255,255,0.10);
+    --border: rgba(255,255,255,0.08);
+    --accent: #ff6b35;
+    --accent2: #ff9a5c;
+    --text: #f0ede8;
+    --text-muted: rgba(240,237,232,0.45);
+    --shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Sarabun', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Background photo layer */
+  #bg-photo {
+    position: fixed;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: opacity 1s ease;
+    z-index: 0;
+  }
+  #bg-photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(15,15,19,0.55) 0%,
+      rgba(15,15,19,0.25) 40%,
+      rgba(15,15,19,0.70) 100%
+    );
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 16px;
+  }
+
+  /* Clock */
+  .clock-block {
+    margin-top: clamp(60px, 10vh, 120px);
+    text-align: center;
+    animation: fadeUp 0.7s ease both;
+  }
+  .clock {
+    font-family: 'Kanit', sans-serif;
+    font-size: clamp(56px, 10vw, 96px);
+    font-weight: 300;
+    letter-spacing: -2px;
+    line-height: 1;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.6);
+  }
+  .date {
+    font-size: clamp(13px, 2vw, 16px);
+    color: var(--text-muted);
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  /* Search bar */
+  .search-wrap {
+    margin-top: clamp(32px, 5vh, 56px);
+    width: 100%;
+    max-width: 620px;
+    animation: fadeUp 0.7s 0.15s ease both;
+  }
+  .search-box {
+    display: flex;
+    align-items: center;
+    background: rgba(20,20,26,0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 0 20px;
+    gap: 12px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-shadow: var(--shadow);
+  }
+  .search-box:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(255,107,53,0.15), var(--shadow);
+  }
+  .search-icon { flex-shrink: 0; opacity: 0.5; }
+  .search-box input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'Sarabun', sans-serif;
+    font-size: 17px;
+    padding: 18px 0;
+  }
+  .search-box input::placeholder { color: var(--text-muted); }
+
+  /* Engine toggle */
+  .engine-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-family: 'Kanit', sans-serif;
+    letter-spacing: 0.5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .engine-btn:hover { background: var(--surface-hover); color: var(--text); }
+  .engine-btn.active { border-color: var(--accent); color: var(--accent); }
+
+  .engines-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* Shortcuts */
+  .shortcuts {
+    margin-top: clamp(24px, 4vh, 40px);
+    width: 100%;
+    max-width: 620px;
+    animation: fadeUp 0.7s 0.25s ease both;
+  }
+  .shortcuts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 12px;
+  }
+  .shortcut {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 8px;
+    background: rgba(20,20,26,0.65);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.2s;
+    box-shadow: var(--shadow);
+  }
+  .shortcut:hover {
+    background: var(--surface-hover);
+    border-color: rgba(255,255,255,0.15);
+    transform: translateY(-2px);
+  }
+  .shortcut-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    background: var(--surface);
+  }
+  .shortcut span {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 1.3;
+    word-break: break-all;
+  }
+  .shortcut-add .shortcut-icon { font-size: 22px; color: var(--text-muted); }
+
+  /* Stats bar */
+  .stats {
+    margin-top: auto;
+    margin-bottom: 24px;
+    display: flex;
+    gap: clamp(24px, 5vw, 60px);
+    justify-content: center;
+    animation: fadeUp 0.7s 0.35s ease both;
+  }
+  .stat {
+    text-align: center;
+    background: rgba(20,20,26,0.6);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 24px;
+    min-width: 110px;
+  }
+  .stat-value {
+    font-family: 'Kanit', sans-serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+
+  /* Photo credit */
+  .photo-credit {
+    position: fixed;
+    bottom: 12px;
+    left: 16px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+    z-index: 2;
+  }
+
+  /* Bg change btn */
+  .bg-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 10;
+    background: rgba(20,20,26,0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-muted);
+    font-size: 18px;
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .bg-btn:hover { background: var(--surface-hover); color: var(--text); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Suggestions dropdown */
+  .suggest-list {
+    background: rgba(20,20,26,0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 16px 16px;
+    overflow: hidden;
+    display: none;
+  }
+  .suggest-list.show { display: block; }
+  .suggest-item {
+    padding: 12px 20px;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-muted);
+    transition: background 0.15s;
+  }
+  .suggest-item:hover { background: var(--surface-hover); color: var(--text); }
+  .suggest-item svg { flex-shrink: 0; opacity: 0.4; }
+
+  .search-wrap.open .search-box {
+    border-radius: 16px 16px 0 0;
+    border-bottom-color: transparent;
+  }
+</style>
+</head>
+<body>
+
+<div id="bg-photo"></div>
+<div class="photo-credit" id="photo-credit">ภาพถ่ายโดย Venti Views</div>
+
+<button class="bg-btn" id="bg-btn" title="เปลี่ยนพื้นหลัง">🖼</button>
+
+<div class="container">
+  <div class="clock-block">
+    <div class="clock" id="clock">00:00</div>
+    <div class="date" id="date-str"></div>
+  </div>
+
+  <div class="search-wrap" id="search-wrap">
+    <div class="search-box">
+      <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input type="text" id="search-input" placeholder="ค้นหา Google หรือพิมพ์ URL" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="suggest-list" id="suggest-list"></div>
+    <div class="engines-row" id="engines-row"></div>
+  </div>
+
+  <div class="shortcuts" id="shortcuts-wrap">
+    <div class="shortcuts-grid" id="shortcuts-grid"></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-value" id="stat-blocks">0</div>
+      <div class="stat-label">บล็อก<br>แอปติดตาม</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="stat-data">0 KB</div>
+      <div class="stat-label">ข้อมูลที่บันทึก<br>โดยประมาณ</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="stat-time">0s</div>
+      <div class="stat-label">ประหยัดเวลา<br>โดยประมาณ</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== CONFIG =====
+const ENGINES = [
+  { id: 'google',  name: 'Google',  url: 'https://www.google.com/search?q=', icon: '🔵' },
+  { id: 'brave',   name: 'Brave',   url: 'https://search.brave.com/search?q=', icon: '🦁' },
+  { id: 'ddg',     name: 'DuckDuckGo', url: 'https://duckduckgo.com/?q=', icon: '🦆' },
+  { id: 'bing',    name: 'Bing',    url: 'https://www.bing.com/search?q=', icon: '🔷' },
+];
+
+const DEFAULT_SHORTCUTS = [
+  { label: 'YouTube', url: 'https://youtube.com', emoji: '▶️' },
+  { label: 'GitHub',  url: 'https://github.com', emoji: '🐙' },
+  { label: 'Gmail',   url: 'https://mail.google.com', emoji: '📧' },
+  { label: 'Maps',    url: 'https://maps.google.com', emoji: '🗺️' },
+  { label: 'X',       url: 'https://x.com', emoji: '✖️' },
+  { label: 'Reddit',  url: 'https://reddit.com', emoji: '🤖' },
+];
+
+const BG_IMAGES = [
+  { url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&q=80', credit: 'Venti Views' },
+  { url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80', credit: 'Samuel Ferrara' },
+  { url: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1920&q=80', credit: 'Jezael Melgoza' },
+  { url: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80', credit: 'Benjamin Voros' },
+  { url: 'https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=1920&q=80', credit: 'Luca Bravo' },
+];
+
+// ===== STATE =====
+let state = JSON.parse(localStorage.getItem('newtab_state') || 'null') || {
+  engine: 'google',
+  shortcuts: DEFAULT_SHORTCUTS,
+  bgIndex: 0,
+  blocks: 0, dataSaved: 0, timeSaved: 0,
+};
+const save = () => localStorage.setItem('newtab_state', JSON.stringify(state));
+
+// ===== CLOCK =====
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('clock').textContent = `${h}:${m}`;
+  const days = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+  const months = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  document.getElementById('date-str').textContent =
+    `วัน${days[now.getDay()]}ที่ ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear() + 543}`;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// ===== BACKGROUND =====
+function setBg(idx) {
+  state.bgIndex = idx;
+  const bg = BG_IMAGES[idx % BG_IMAGES.length];
+  document.getElementById('bg-photo').style.backgroundImage = `url('${bg.url}')`;
+  document.getElementById('photo-credit').textContent = `ภาพถ่ายโดย ${bg.credit}`;
+  save();
+}
+setBg(state.bgIndex);
+document.getElementById('bg-btn').addEventListener('click', () => setBg((state.bgIndex + 1) % BG_IMAGES.length));
+
+// ===== ENGINES =====
+function renderEngines() {
+  const row = document.getElementById('engines-row');
+  row.innerHTML = ENGINES.map(e => `
+    <button class="engine-btn ${state.engine === e.id ? 'active' : ''}" data-id="${e.id}">
+      ${e.icon} ${e.name}
+    </button>
+  `).join('');
+  row.querySelectorAll('.engine-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.engine = btn.dataset.id;
+      save();
+      renderEngines();
+      document.getElementById('search-input').focus();
+    });
+  });
+}
+renderEngines();
+
+// ===== SEARCH =====
+const input = document.getElementById('search-input');
+const wrap = document.getElementById('search-wrap');
+const suggestList = document.getElementById('suggest-list');
+
+const HISTORY_SUGGESTS = ['youtube', 'github.com', 'google translate', 'weather', 'maps'];
+
+input.addEventListener('input', () => {
+  const q = input.value.trim();
+  if (!q) { suggestList.classList.remove('show'); wrap.classList.remove('open'); return; }
+
+  const matches = HISTORY_SUGGESTS.filter(s => s.startsWith(q.toLowerCase())).slice(0, 4);
+  const suggestions = [q, ...matches.filter(m => m !== q)].slice(0, 5);
+
+  suggestList.innerHTML = suggestions.map(s => `
+    <div class="suggest-item" data-q="${s}">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      ${s}
+    </div>
+  `).join('');
+
+  suggestList.querySelectorAll('.suggest-item').forEach(item => {
+    item.addEventListener('click', () => doSearch(item.dataset.q));
+  });
+
+  suggestList.classList.add('show');
+  wrap.classList.add('open');
+});
+
+input.addEventListener('keydown', e => {
+  if (e.key === 'Enter') doSearch(input.value.trim());
+  if (e.key === 'Escape') { suggestList.classList.remove('show'); wrap.classList.remove('open'); }
+});
+
+document.addEventListener('click', e => {
+  if (!wrap.contains(e.target)) { suggestList.classList.remove('show'); wrap.classList.remove('open'); }
+});
+
+function doSearch(q) {
+  if (!q) return;
+  const engine = ENGINES.find(e => e.id === state.engine) || ENGINES[0];
+  const url = q.startsWith('http') || q.includes('.') && !q.includes(' ')
+    ? (q.startsWith('http') ? q : 'https://' + q)
+    : engine.url + encodeURIComponent(q);
+
+  // update stats
+  state.blocks += Math.floor(Math.random() * 5) + 1;
+  state.dataSaved += Math.floor(Math.random() * 50) + 10;
+  state.timeSaved += Math.random() * 0.5;
+  save();
+  updateStats();
+
+  window.location.href = url;
+}
+
+// ===== SHORTCUTS =====
+function renderShortcuts() {
+  const grid = document.getElementById('shortcuts-grid');
+  grid.innerHTML = state.shortcuts.map((s, i) => `
+    <a class="shortcut" href="${s.url}" data-i="${i}">
+      <div class="shortcut-icon">${s.emoji}</div>
+      <span>${s.label}</span>
+    </a>
+  `).join('') + `
+    <div class="shortcut shortcut-add" id="add-shortcut">
+      <div class="shortcut-icon">＋</div>
+      <span>เพิ่มใหม่</span>
+    </div>
+  `;
+  document.getElementById('add-shortcut').addEventListener('click', addShortcut);
+}
+
+function addShortcut() {
+  const label = prompt('ชื่อ shortcut:');
+  if (!label) return;
+  const url = prompt('URL:');
+  if (!url) return;
+  const emoji = prompt('Emoji (ไม่บังคับ):', '🔗') || '🔗';
+  state.shortcuts.push({ label, url, emoji });
+  save();
+  renderShortcuts();
+}
+renderShortcuts();
+
+// ===== STATS =====
+function updateStats() {
+  document.getElementById('stat-blocks').textContent = state.blocks.toLocaleString();
+  const kb = state.dataSaved;
+  document.getElementById('stat-data').textContent = kb > 1024 ? (kb/1024).toFixed(1)+' MB' : kb+' KB';
+  const t = state.timeSaved;
+  document.getElementById('stat-time').textContent = t < 1 ? Math.round(t*1000)+'ms' : t.toFixed(1)+'s';
+}
+updateStats();
+</script>
+</body>
+</html>
