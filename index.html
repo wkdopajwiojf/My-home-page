@@ -199,6 +199,43 @@
   }
   .shortcut-add .shortcut-icon { font-size: 22px; color: var(--text-muted); }
 
+  .shortcut-wrap {
+    position: relative;
+  }
+  .shortcut-wrap .delete-btn {
+    position: absolute;
+    top: -8px; right: -8px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: #e53e3e;
+    border: 2px solid var(--bg);
+    color: #fff;
+    font-size: 13px;
+    line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: opacity 0.15s, transform 0.15s;
+    z-index: 5;
+    user-select: none;
+  }
+  .shortcuts-grid.edit-mode .shortcut-wrap .delete-btn {
+    opacity: 1;
+    transform: scale(1);
+    animation: wiggle 0.4s ease infinite alternate;
+  }
+  .shortcuts-grid.edit-mode .shortcut {
+    animation: wiggle 0.35s ease infinite alternate;
+  }
+  .shortcuts-grid.edit-mode .shortcut-add {
+    animation: none;
+  }
+  @keyframes wiggle {
+    from { transform: rotate(-1.5deg) translateY(0); }
+    to   { transform: rotate(1.5deg) translateY(-1px); }
+  }
+
   /* Stats bar */
   .stats {
     margin-top: auto;
@@ -484,21 +521,66 @@ function doSearch(q) {
 }
 
 // ===== SHORTCUTS =====
+let editMode = false;
+let longPressTimer = null;
+
+function setEditMode(val) {
+  editMode = val;
+  const grid = document.getElementById('shortcuts-grid');
+  grid.classList.toggle('edit-mode', val);
+}
+
 function renderShortcuts() {
   const grid = document.getElementById('shortcuts-grid');
   grid.innerHTML = state.shortcuts.map((s, i) => `
-    <a class="shortcut" href="${s.url}" data-i="${i}">
-      <div class="shortcut-icon"><img src="${getFaviconUrl(s.url)}" alt="${s.label}" onerror="this.style.display='none';this.parentNode.textContent='🔗'"></div>
-      <span>${s.label}</span>
-    </a>
+    <div class="shortcut-wrap" data-i="${i}">
+      <button class="delete-btn" data-i="${i}">✕</button>
+      <a class="shortcut" href="${s.url}" data-i="${i}">
+        <div class="shortcut-icon"><img src="${getFaviconUrl(s.url)}" alt="${s.label}" onerror="this.style.display='none';this.parentNode.textContent='🔗'"></div>
+        <span>${s.label}</span>
+      </a>
+    </div>
   `).join('') + `
     <div class="shortcut shortcut-add" id="add-shortcut">
       <div class="shortcut-icon">＋</div>
       <span>เพิ่มใหม่</span>
     </div>
   `;
-  document.getElementById('add-shortcut').addEventListener('click', addShortcut);
+
+  // delete buttons
+  grid.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault(); e.stopPropagation();
+      const i = parseInt(btn.dataset.i);
+      state.shortcuts.splice(i, 1);
+      save();
+      renderShortcuts();
+      if (state.shortcuts.length === 0) setEditMode(false);
+    });
+  });
+
+  // long press to enter edit mode
+  grid.querySelectorAll('.shortcut:not(.shortcut-add)').forEach(el => {
+    el.addEventListener('pointerdown', () => {
+      longPressTimer = setTimeout(() => { setEditMode(true); }, 500);
+    });
+    el.addEventListener('pointerup', () => clearTimeout(longPressTimer));
+    el.addEventListener('pointercancel', () => clearTimeout(longPressTimer));
+    el.addEventListener('pointermove', () => clearTimeout(longPressTimer));
+    // prevent navigation when in edit mode
+    el.addEventListener('click', e => { if (editMode) e.preventDefault(); });
+  });
+
+  document.getElementById('add-shortcut').addEventListener('click', () => {
+    setEditMode(false);
+    addShortcut();
+  });
 }
+
+// tap outside shortcuts to exit edit mode
+document.addEventListener('click', e => {
+  if (editMode && !e.target.closest('#shortcuts-grid')) setEditMode(false);
+});
 
 function addShortcut() {
   const label = prompt('ชื่อ shortcut:');
