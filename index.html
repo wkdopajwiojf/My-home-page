@@ -184,6 +184,11 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 20px;
     background: var(--surface);
+    overflow: hidden;
+  }
+  .shortcut-icon img {
+    width: 24px; height: 24px;
+    object-fit: contain;
   }
   .shortcut span {
     font-size: 11px;
@@ -343,13 +348,22 @@ const ENGINES = [
 ];
 
 const DEFAULT_SHORTCUTS = [
-  { label: 'YouTube', url: 'https://youtube.com', emoji: '▶️' },
-  { label: 'GitHub',  url: 'https://github.com', emoji: '🐙' },
-  { label: 'Gmail',   url: 'https://mail.google.com', emoji: '📧' },
-  { label: 'Maps',    url: 'https://maps.google.com', emoji: '🗺️' },
-  { label: 'X',       url: 'https://x.com', emoji: '✖️' },
-  { label: 'Reddit',  url: 'https://reddit.com', emoji: '🤖' },
+  { label: 'YouTube', url: 'https://youtube.com' },
+  { label: 'GitHub',  url: 'https://github.com' },
+  { label: 'Gmail',   url: 'https://mail.google.com' },
+  { label: 'Maps',    url: 'https://maps.google.com' },
+  { label: 'X',       url: 'https://x.com' },
+  { label: 'Reddit',  url: 'https://reddit.com' },
 ];
+
+function getFaviconUrl(url) {
+  try {
+    const origin = new URL(url).origin;
+    return `https://www.google.com/s2/favicons?domain=${origin}&sz=64`;
+  } catch {
+    return `https://www.google.com/s2/favicons?domain=${url}&sz=64`;
+  }
+}
 
 const BG_IMAGES = [
   { url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&q=80', credit: 'Venti Views' },
@@ -474,7 +488,7 @@ function renderShortcuts() {
   const grid = document.getElementById('shortcuts-grid');
   grid.innerHTML = state.shortcuts.map((s, i) => `
     <a class="shortcut" href="${s.url}" data-i="${i}">
-      <div class="shortcut-icon">${s.emoji}</div>
+      <div class="shortcut-icon"><img src="${getFaviconUrl(s.url)}" alt="${s.label}" onerror="this.style.display='none';this.parentNode.textContent='🔗'"></div>
       <span>${s.label}</span>
     </a>
   `).join('') + `
@@ -489,10 +503,10 @@ function renderShortcuts() {
 function addShortcut() {
   const label = prompt('ชื่อ shortcut:');
   if (!label) return;
-  const url = prompt('URL:');
+  const url = prompt('URL: (เช่น https://example.com)');
   if (!url) return;
-  const emoji = prompt('Emoji (ไม่บังคับ):', '🔗') || '🔗';
-  state.shortcuts.push({ label, url, emoji });
+  const fullUrl = url.startsWith('http') ? url : 'https://' + url;
+  state.shortcuts.push({ label, url: fullUrl });
   save();
   renderShortcuts();
 }
