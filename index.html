@@ -522,7 +522,6 @@ function doSearch(q) {
 
 // ===== SHORTCUTS =====
 let editMode = false;
-let longPressTimer = null;
 
 function setEditMode(val) {
   editMode = val;
@@ -559,16 +558,24 @@ function renderShortcuts() {
     });
   });
 
-  // long press to enter edit mode
+  // double tap / double click to toggle edit mode
   grid.querySelectorAll('.shortcut:not(.shortcut-add)').forEach(el => {
-    el.addEventListener('pointerdown', () => {
-      longPressTimer = setTimeout(() => { setEditMode(true); }, 500);
+    let lastTap = 0;
+    el.addEventListener('click', e => {
+      if (editMode) { e.preventDefault(); return; }
     });
-    el.addEventListener('pointerup', () => clearTimeout(longPressTimer));
-    el.addEventListener('pointercancel', () => clearTimeout(longPressTimer));
-    el.addEventListener('pointermove', () => clearTimeout(longPressTimer));
-    // prevent navigation when in edit mode
-    el.addEventListener('click', e => { if (editMode) e.preventDefault(); });
+    el.addEventListener('touchend', e => {
+      const now = Date.now();
+      if (now - lastTap < 350) {
+        e.preventDefault();
+        setEditMode(true);
+      }
+      lastTap = now;
+    });
+    el.addEventListener('dblclick', e => {
+      e.preventDefault();
+      setEditMode(true);
+    });
   });
 
   document.getElementById('add-shortcut').addEventListener('click', () => {
@@ -577,8 +584,11 @@ function renderShortcuts() {
   });
 }
 
-// tap outside shortcuts to exit edit mode
+// tap/click outside shortcuts to exit edit mode
 document.addEventListener('click', e => {
+  if (editMode && !e.target.closest('#shortcuts-grid')) setEditMode(false);
+});
+document.addEventListener('touchend', e => {
   if (editMode && !e.target.closest('#shortcuts-grid')) setEditMode(false);
 });
 
