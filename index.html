@@ -12,322 +12,220 @@
     --surface-hover: rgba(255,255,255,0.10);
     --border: rgba(255,255,255,0.08);
     --accent: #ff6b35;
-    --accent2: #ff9a5c;
     --text: #f0ede8;
     --text-muted: rgba(240,237,232,0.45);
     --shadow: 0 8px 32px rgba(0,0,0,0.5);
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   body {
     font-family: 'Sarabun', sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
-    overflow-x: hidden;
+    overflow: hidden;
     position: relative;
+    touch-action: none;
   }
 
-  /* Background photo layer */
+  /* BG */
   #bg-photo {
-    position: fixed;
-    inset: 0;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    transition: opacity 1s ease;
+    position: fixed; inset: 0;
+    background-size: cover; background-position: center;
     z-index: 0;
   }
   #bg-photo::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      to bottom,
-      rgba(15,15,19,0.55) 0%,
-      rgba(15,15,19,0.25) 40%,
-      rgba(15,15,19,0.70) 100%
-    );
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(15,15,19,.55) 0%, rgba(15,15,19,.2) 40%, rgba(15,15,19,.7) 100%);
   }
 
+  /* Layout */
   .container {
-    position: relative;
-    z-index: 1;
+    position: relative; z-index: 1;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: flex; flex-direction: column; align-items: center;
     padding: 0 16px;
+    pointer-events: none; /* let clicks fall through to shortcuts */
   }
+  .container > * { pointer-events: all; }
 
   /* Clock */
   .clock-block {
     margin-top: clamp(60px, 10vh, 120px);
     text-align: center;
-    animation: fadeUp 0.7s ease both;
+    animation: fadeUp .7s ease both;
   }
   .clock {
     font-family: 'Kanit', sans-serif;
     font-size: clamp(56px, 10vw, 96px);
-    font-weight: 300;
-    letter-spacing: -2px;
-    line-height: 1;
-    text-shadow: 0 2px 20px rgba(0,0,0,0.6);
+    font-weight: 300; letter-spacing: -2px; line-height: 1;
+    text-shadow: 0 2px 20px rgba(0,0,0,.6);
   }
-  .date {
-    font-size: clamp(13px, 2vw, 16px);
-    color: var(--text-muted);
-    margin-top: 8px;
-    letter-spacing: 0.5px;
-  }
+  .date { font-size: clamp(13px,2vw,16px); color: var(--text-muted); margin-top: 8px; }
 
-  /* Search bar */
+  /* Search */
   .search-wrap {
-    margin-top: clamp(32px, 5vh, 56px);
-    width: 100%;
-    max-width: 620px;
-    animation: fadeUp 0.7s 0.15s ease both;
+    margin-top: clamp(28px,5vh,56px);
+    width: 100%; max-width: 620px;
+    animation: fadeUp .7s .15s ease both;
   }
   .search-box {
-    display: flex;
-    align-items: center;
-    background: rgba(20,20,26,0.75);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 0 20px;
-    gap: 12px;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    display: flex; align-items: center;
+    background: rgba(20,20,26,.78);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border); border-radius: 16px;
+    padding: 0 20px; gap: 12px;
+    transition: border-color .2s, box-shadow .2s;
     box-shadow: var(--shadow);
   }
-  .search-box:focus-within {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(255,107,53,0.15), var(--shadow);
-  }
-  .search-icon { flex-shrink: 0; opacity: 0.5; }
+  .search-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,107,53,.15), var(--shadow); }
+  .search-icon { flex-shrink: 0; opacity: .5; }
   .search-box input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: var(--text);
-    font-family: 'Sarabun', sans-serif;
-    font-size: 17px;
-    padding: 18px 0;
+    flex: 1; background: transparent; border: none; outline: none;
+    color: var(--text); font-family: 'Sarabun',sans-serif; font-size: 17px; padding: 18px 0;
   }
   .search-box input::placeholder { color: var(--text-muted); }
-
-  /* Engine toggle */
   .engine-btn {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text-muted);
-    font-size: 11px;
-    font-family: 'Kanit', sans-serif;
-    letter-spacing: 0.5px;
-    padding: 5px 10px;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-    flex-shrink: 0;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text-muted); font-size: 11px; font-family: 'Kanit',sans-serif;
+    padding: 5px 10px; cursor: pointer; transition: all .2s; white-space: nowrap; flex-shrink: 0;
   }
   .engine-btn:hover { background: var(--surface-hover); color: var(--text); }
   .engine-btn.active { border-color: var(--accent); color: var(--accent); }
+  .engines-row { display: flex; gap: 8px; margin-top: 12px; justify-content: center; flex-wrap: wrap; }
+  .suggest-list {
+    background: rgba(20,20,26,.95); backdrop-filter: blur(20px);
+    border: 1px solid var(--border); border-top: none;
+    border-radius: 0 0 16px 16px; overflow: hidden; display: none;
+  }
+  .suggest-list.show { display: block; }
+  .suggest-item {
+    padding: 12px 20px; font-size: 15px; cursor: pointer;
+    display: flex; align-items: center; gap: 10px; color: var(--text-muted); transition: background .15s;
+  }
+  .suggest-item:hover { background: var(--surface-hover); color: var(--text); }
+  .search-wrap.open .search-box { border-radius: 16px 16px 0 0; border-bottom-color: transparent; }
 
-  .engines-row {
-    display: flex;
-    gap: 8px;
-    margin-top: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  /* Shortcuts */
-  .shortcuts {
-    margin-top: clamp(24px, 4vh, 40px);
-    width: 100%;
-    max-width: 620px;
-    animation: fadeUp 0.7s 0.25s ease both;
-  }
-  .shortcuts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-    gap: 12px;
-  }
-  .shortcut {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    padding: 14px 8px;
-    background: rgba(20,20,26,0.65);
-    backdrop-filter: blur(16px);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    cursor: pointer;
-    text-decoration: none;
-    color: var(--text);
-    transition: all 0.2s;
+  /* ===== FREE-FLOATING SHORTCUTS ===== */
+  .shortcut-float {
+    position: fixed;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 12px 8px;
+    background: rgba(20,20,26,.72);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border); border-radius: 14px;
+    cursor: pointer; color: var(--text);
     box-shadow: var(--shadow);
+    user-select: none; -webkit-user-select: none;
+    touch-action: none;
+    width: 76px;
+    z-index: 10;
+    transition: border-color .2s, box-shadow .2s;
   }
-  .shortcut:hover {
-    background: var(--surface-hover);
-    border-color: rgba(255,255,255,0.15);
-    transform: translateY(-2px);
+  .shortcut-float:hover { border-color: rgba(255,255,255,.15); }
+  .shortcut-float.dragging {
+    opacity: .85;
+    box-shadow: 0 16px 48px rgba(0,0,0,.7);
+    border-color: var(--accent);
+    z-index: 100;
+    transition: none;
   }
-  .shortcut-icon {
-    width: 36px; height: 36px;
-    border-radius: 10px;
+  .shortcut-float .sc-icon {
+    width: 36px; height: 36px; border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-    background: var(--surface);
-    overflow: hidden;
+    background: var(--surface); overflow: hidden; font-size: 20px; flex-shrink: 0;
   }
-  .shortcut-icon img {
-    width: 24px; height: 24px;
-    object-fit: contain;
+  .shortcut-float .sc-icon img { width: 24px; height: 24px; object-fit: contain; }
+  .shortcut-float .sc-label {
+    font-size: 10px; color: var(--text-muted);
+    text-align: center; line-height: 1.3;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;
   }
-  .shortcut span {
-    font-size: 11px;
-    color: var(--text-muted);
-    text-align: center;
-    line-height: 1.3;
-    word-break: break-all;
-  }
-  .shortcut-add .shortcut-icon { font-size: 22px; color: var(--text-muted); }
 
-  .shortcut-wrap {
-    position: relative;
-  }
-  .shortcut-wrap .delete-btn {
-    position: absolute;
-    top: -8px; right: -8px;
-    width: 22px; height: 22px;
-    border-radius: 50%;
-    background: #e53e3e;
-    border: 2px solid var(--bg);
-    color: #fff;
-    font-size: 13px;
-    line-height: 1;
+  /* delete X badge */
+  .shortcut-float .del-btn {
+    position: absolute; top: -8px; right: -8px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: #e53e3e; border: 2px solid #0f0f13;
+    color: #fff; font-size: 12px;
     display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    opacity: 0;
-    transform: scale(0.5);
-    transition: opacity 0.15s, transform 0.15s;
-    z-index: 5;
+    cursor: pointer; z-index: 5;
+    opacity: 0; transform: scale(.4);
+    transition: opacity .15s, transform .15s;
+    pointer-events: none;
+  }
+  body.edit-mode .shortcut-float .del-btn {
+    opacity: 1; transform: scale(1);
+    pointer-events: all;
+    animation: wiggle .35s ease infinite alternate;
+  }
+  body.edit-mode .shortcut-float {
+    animation: wiggle .35s ease infinite alternate;
+  }
+
+  /* Add shortcut button — always visible fixed position */
+  #add-shortcut {
+    position: fixed;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 12px 8px;
+    background: rgba(20,20,26,.6);
+    backdrop-filter: blur(16px);
+    border: 1px dashed rgba(255,255,255,.15); border-radius: 14px;
+    cursor: pointer; color: var(--text-muted);
+    width: 76px; z-index: 10;
+    transition: background .2s, border-color .2s;
+    touch-action: none;
     user-select: none;
   }
-  .shortcuts-grid.edit-mode .shortcut-wrap .delete-btn {
-    opacity: 1;
-    transform: scale(1);
-    animation: wiggle 0.4s ease infinite alternate;
-  }
-  .shortcuts-grid.edit-mode .shortcut {
-    animation: wiggle 0.35s ease infinite alternate;
-  }
-  .shortcuts-grid.edit-mode .shortcut-add {
-    animation: none;
-  }
+  #add-shortcut:hover { background: var(--surface-hover); border-color: rgba(255,255,255,.3); color: var(--text); }
+  #add-shortcut .sc-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 22px; }
+  #add-shortcut .sc-label { font-size: 10px; text-align: center; }
+
   @keyframes wiggle {
-    from { transform: rotate(-1.5deg) translateY(0); }
-    to   { transform: rotate(1.5deg) translateY(-1px); }
+    from { transform: rotate(-1.8deg); }
+    to   { transform: rotate(1.8deg); }
   }
 
-  /* Stats bar */
+  /* Edit mode hint */
+  #edit-hint {
+    position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+    background: rgba(20,20,26,.85); backdrop-filter: blur(12px);
+    border: 1px solid var(--accent); border-radius: 20px;
+    color: var(--accent); font-size: 12px; font-family: 'Kanit',sans-serif;
+    padding: 6px 18px; z-index: 200;
+    opacity: 0; pointer-events: none;
+    transition: opacity .2s;
+  }
+  body.edit-mode #edit-hint { opacity: 1; }
+
+  /* Stats */
   .stats {
-    margin-top: auto;
-    margin-bottom: 24px;
-    display: flex;
-    gap: clamp(24px, 5vw, 60px);
-    justify-content: center;
-    animation: fadeUp 0.7s 0.35s ease both;
+    margin-top: auto; margin-bottom: 24px;
+    display: flex; gap: clamp(16px,4vw,48px); justify-content: center;
+    animation: fadeUp .7s .35s ease both;
   }
   .stat {
-    text-align: center;
-    background: rgba(20,20,26,0.6);
-    backdrop-filter: blur(16px);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 14px 24px;
-    min-width: 110px;
+    text-align: center; background: rgba(20,20,26,.6);
+    backdrop-filter: blur(16px); border: 1px solid var(--border);
+    border-radius: 14px; padding: 12px 20px; min-width: 100px;
   }
-  .stat-value {
-    font-family: 'Kanit', sans-serif;
-    font-size: 24px;
-    font-weight: 600;
-    color: var(--accent);
-  }
-  .stat-label {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 2px;
-    line-height: 1.4;
-  }
+  .stat-value { font-family: 'Kanit',sans-serif; font-size: 22px; font-weight: 600; color: var(--accent); }
+  .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
 
-  /* Photo credit */
-  .photo-credit {
-    position: fixed;
-    bottom: 12px;
-    left: 16px;
-    font-size: 11px;
-    color: rgba(255,255,255,0.35);
-    z-index: 2;
-  }
-
-  /* Bg change btn */
+  /* misc */
+  .photo-credit { position: fixed; bottom: 12px; left: 16px; font-size: 11px; color: rgba(255,255,255,.3); z-index: 2; }
   .bg-btn {
-    position: fixed;
-    top: 16px;
-    right: 16px;
-    z-index: 10;
-    background: rgba(20,20,26,0.7);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--text-muted);
-    font-size: 18px;
-    width: 40px; height: 40px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
+    position: fixed; top: 16px; right: 16px; z-index: 10;
+    background: rgba(20,20,26,.7); backdrop-filter: blur(12px);
+    border: 1px solid var(--border); border-radius: 10px;
+    color: var(--text-muted); font-size: 18px;
+    width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all .2s;
   }
   .bg-btn:hover { background: var(--surface-hover); color: var(--text); }
 
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(18px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Suggestions dropdown */
-  .suggest-list {
-    background: rgba(20,20,26,0.95);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--border);
-    border-top: none;
-    border-radius: 0 0 16px 16px;
-    overflow: hidden;
-    display: none;
-  }
-  .suggest-list.show { display: block; }
-  .suggest-item {
-    padding: 12px 20px;
-    font-size: 15px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--text-muted);
-    transition: background 0.15s;
-  }
-  .suggest-item:hover { background: var(--surface-hover); color: var(--text); }
-  .suggest-item svg { flex-shrink: 0; opacity: 0.4; }
-
-  .search-wrap.open .search-box {
-    border-radius: 16px 16px 0 0;
-    border-bottom-color: transparent;
+    to   { opacity: 1; transform: none; }
   }
 </style>
 </head>
@@ -335,8 +233,8 @@
 
 <div id="bg-photo"></div>
 <div class="photo-credit" id="photo-credit">ภาพถ่ายโดย Venti Views</div>
-
 <button class="bg-btn" id="bg-btn" title="เปลี่ยนพื้นหลัง">🖼</button>
+<div id="edit-hint">โหมดแก้ไข — แตะข้างนอกเพื่อออก</div>
 
 <div class="container">
   <div class="clock-block">
@@ -355,264 +253,257 @@
     <div class="engines-row" id="engines-row"></div>
   </div>
 
-  <div class="shortcuts" id="shortcuts-wrap">
-    <div class="shortcuts-grid" id="shortcuts-grid"></div>
-  </div>
-
   <div class="stats">
-    <div class="stat">
-      <div class="stat-value" id="stat-blocks">0</div>
-      <div class="stat-label">บล็อก<br>แอปติดตาม</div>
-    </div>
-    <div class="stat">
-      <div class="stat-value" id="stat-data">0 KB</div>
-      <div class="stat-label">ข้อมูลที่บันทึก<br>โดยประมาณ</div>
-    </div>
-    <div class="stat">
-      <div class="stat-value" id="stat-time">0s</div>
-      <div class="stat-label">ประหยัดเวลา<br>โดยประมาณ</div>
-    </div>
+    <div class="stat"><div class="stat-value" id="stat-blocks">0</div><div class="stat-label">บล็อก<br>แอปติดตาม</div></div>
+    <div class="stat"><div class="stat-value" id="stat-data">0 KB</div><div class="stat-label">ข้อมูลที่บันทึก<br>โดยประมาณ</div></div>
+    <div class="stat"><div class="stat-value" id="stat-time">0s</div><div class="stat-label">ประหยัดเวลา<br>โดยประมาณ</div></div>
   </div>
 </div>
 
+<!-- Add button -->
+<div id="add-shortcut">
+  <div class="sc-icon">＋</div>
+  <div class="sc-label">เพิ่มใหม่</div>
+</div>
+
 <script>
-// ===== CONFIG =====
+// ===================== CONFIG =====================
 const ENGINES = [
-  { id: 'google',  name: 'Google',  url: 'https://www.google.com/search?q=', icon: '🔵' },
-  { id: 'brave',   name: 'Brave',   url: 'https://search.brave.com/search?q=', icon: '🦁' },
-  { id: 'ddg',     name: 'DuckDuckGo', url: 'https://duckduckgo.com/?q=', icon: '🦆' },
-  { id: 'bing',    name: 'Bing',    url: 'https://www.bing.com/search?q=', icon: '🔷' },
+  { id:'google', name:'Google',      url:'https://www.google.com/search?q=',    icon:'🔵' },
+  { id:'brave',  name:'Brave',       url:'https://search.brave.com/search?q=',  icon:'🦁' },
+  { id:'ddg',    name:'DuckDuckGo',  url:'https://duckduckgo.com/?q=',          icon:'🦆' },
+  { id:'bing',   name:'Bing',        url:'https://www.bing.com/search?q=',      icon:'🔷' },
 ];
-
+const BG_IMAGES = [
+  { url:'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&q=80', credit:'Venti Views' },
+  { url:'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80', credit:'Samuel Ferrara' },
+  { url:'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1920&q=80', credit:'Jezael Melgoza' },
+  { url:'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80', credit:'Benjamin Voros' },
+  { url:'https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=1920&q=80', credit:'Luca Bravo' },
+];
 const DEFAULT_SHORTCUTS = [
-  { label: 'YouTube', url: 'https://youtube.com' },
-  { label: 'GitHub',  url: 'https://github.com' },
-  { label: 'Gmail',   url: 'https://mail.google.com' },
-  { label: 'Maps',    url: 'https://maps.google.com' },
-  { label: 'X',       url: 'https://x.com' },
-  { label: 'Reddit',  url: 'https://reddit.com' },
+  { label:'YouTube', url:'https://youtube.com',       x:0.05, y:0.35 },
+  { label:'GitHub',  url:'https://github.com',        x:0.05, y:0.48 },
+  { label:'Gmail',   url:'https://mail.google.com',   x:0.05, y:0.61 },
+  { label:'Maps',    url:'https://maps.google.com',   x:0.85, y:0.35 },
+  { label:'X',       url:'https://x.com',             x:0.85, y:0.48 },
+  { label:'Reddit',  url:'https://reddit.com',        x:0.85, y:0.61 },
 ];
 
-function getFaviconUrl(url) {
-  try {
-    const origin = new URL(url).origin;
-    return `https://www.google.com/s2/favicons?domain=${origin}&sz=64`;
-  } catch {
-    return `https://www.google.com/s2/favicons?domain=${url}&sz=64`;
-  }
+// ===================== STATE =====================
+let state = JSON.parse(localStorage.getItem('nt2_state') || 'null') || {
+  engine:'google', shortcuts: DEFAULT_SHORTCUTS,
+  bgIndex:0, blocks:0, dataSaved:0, timeSaved:0,
+};
+const save = () => localStorage.setItem('nt2_state', JSON.stringify(state));
+
+// ===================== HELPERS =====================
+function getFavicon(url) {
+  try { return `https://www.google.com/s2/favicons?domain=${new URL(url).origin}&sz=64`; }
+  catch { return `https://www.google.com/s2/favicons?domain=${url}&sz=64`; }
+}
+// convert fractional position → px, clamped to viewport
+function fxToPx(fx, fy, w, h) {
+  return {
+    x: Math.min(Math.max(fx * window.innerWidth,  0), window.innerWidth  - w),
+    y: Math.min(Math.max(fy * window.innerHeight, 0), window.innerHeight - h),
+  };
 }
 
-const BG_IMAGES = [
-  { url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&q=80', credit: 'Venti Views' },
-  { url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80', credit: 'Samuel Ferrara' },
-  { url: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1920&q=80', credit: 'Jezael Melgoza' },
-  { url: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80', credit: 'Benjamin Voros' },
-  { url: 'https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=1920&q=80', credit: 'Luca Bravo' },
-];
-
-// ===== STATE =====
-let state = JSON.parse(localStorage.getItem('newtab_state') || 'null') || {
-  engine: 'google',
-  shortcuts: DEFAULT_SHORTCUTS,
-  bgIndex: 0,
-  blocks: 0, dataSaved: 0, timeSaved: 0,
-};
-const save = () => localStorage.setItem('newtab_state', JSON.stringify(state));
-
-// ===== CLOCK =====
+// ===================== CLOCK =====================
 function updateClock() {
   const now = new Date();
-  const h = String(now.getHours()).padStart(2,'0');
-  const m = String(now.getMinutes()).padStart(2,'0');
-  document.getElementById('clock').textContent = `${h}:${m}`;
-  const days = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
-  const months = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  document.getElementById('clock').textContent =
+    `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  const days   = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+  const months = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน',
+                  'กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
   document.getElementById('date-str').textContent =
-    `วัน${days[now.getDay()]}ที่ ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear() + 543}`;
+    `วัน${days[now.getDay()]}ที่ ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()+543}`;
 }
-updateClock();
-setInterval(updateClock, 1000);
+updateClock(); setInterval(updateClock, 1000);
 
-// ===== BACKGROUND =====
+// ===================== BACKGROUND =====================
 function setBg(idx) {
-  state.bgIndex = idx;
+  state.bgIndex = idx; save();
   const bg = BG_IMAGES[idx % BG_IMAGES.length];
   document.getElementById('bg-photo').style.backgroundImage = `url('${bg.url}')`;
   document.getElementById('photo-credit').textContent = `ภาพถ่ายโดย ${bg.credit}`;
-  save();
 }
 setBg(state.bgIndex);
-document.getElementById('bg-btn').addEventListener('click', () => setBg((state.bgIndex + 1) % BG_IMAGES.length));
+document.getElementById('bg-btn').addEventListener('click', () => setBg((state.bgIndex+1)%BG_IMAGES.length));
 
-// ===== ENGINES =====
+// ===================== ENGINES =====================
 function renderEngines() {
   const row = document.getElementById('engines-row');
-  row.innerHTML = ENGINES.map(e => `
-    <button class="engine-btn ${state.engine === e.id ? 'active' : ''}" data-id="${e.id}">
-      ${e.icon} ${e.name}
-    </button>
-  `).join('');
+  row.innerHTML = ENGINES.map(e =>
+    `<button class="engine-btn ${state.engine===e.id?'active':''}" data-id="${e.id}">${e.icon} ${e.name}</button>`
+  ).join('');
   row.querySelectorAll('.engine-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      state.engine = btn.dataset.id;
-      save();
-      renderEngines();
-      document.getElementById('search-input').focus();
-    });
+    btn.addEventListener('click', () => { state.engine=btn.dataset.id; save(); renderEngines(); document.getElementById('search-input').focus(); });
   });
 }
 renderEngines();
 
-// ===== SEARCH =====
+// ===================== SEARCH =====================
 const input = document.getElementById('search-input');
-const wrap = document.getElementById('search-wrap');
-const suggestList = document.getElementById('suggest-list');
-
-const HISTORY_SUGGESTS = ['youtube', 'github.com', 'google translate', 'weather', 'maps'];
+const swrap = document.getElementById('search-wrap');
+const slist = document.getElementById('suggest-list');
+const HISTORY = ['youtube','github.com','google translate','weather','maps'];
 
 input.addEventListener('input', () => {
   const q = input.value.trim();
-  if (!q) { suggestList.classList.remove('show'); wrap.classList.remove('open'); return; }
-
-  const matches = HISTORY_SUGGESTS.filter(s => s.startsWith(q.toLowerCase())).slice(0, 4);
-  const suggestions = [q, ...matches.filter(m => m !== q)].slice(0, 5);
-
-  suggestList.innerHTML = suggestions.map(s => `
-    <div class="suggest-item" data-q="${s}">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-      </svg>
-      ${s}
-    </div>
-  `).join('');
-
-  suggestList.querySelectorAll('.suggest-item').forEach(item => {
-    item.addEventListener('click', () => doSearch(item.dataset.q));
-  });
-
-  suggestList.classList.add('show');
-  wrap.classList.add('open');
+  if (!q) { slist.classList.remove('show'); swrap.classList.remove('open'); return; }
+  const suggs = [q, ...HISTORY.filter(s=>s.startsWith(q.toLowerCase())&&s!==q)].slice(0,5);
+  slist.innerHTML = suggs.map(s=>`<div class="suggest-item" data-q="${s}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>${s}</div>`).join('');
+  slist.querySelectorAll('.suggest-item').forEach(it=>it.addEventListener('click',()=>doSearch(it.dataset.q)));
+  slist.classList.add('show'); swrap.classList.add('open');
 });
-
 input.addEventListener('keydown', e => {
-  if (e.key === 'Enter') doSearch(input.value.trim());
-  if (e.key === 'Escape') { suggestList.classList.remove('show'); wrap.classList.remove('open'); }
+  if (e.key==='Enter') doSearch(input.value.trim());
+  if (e.key==='Escape') { slist.classList.remove('show'); swrap.classList.remove('open'); }
 });
-
-document.addEventListener('click', e => {
-  if (!wrap.contains(e.target)) { suggestList.classList.remove('show'); wrap.classList.remove('open'); }
-});
+document.addEventListener('click', e => { if(!swrap.contains(e.target)){slist.classList.remove('show');swrap.classList.remove('open');} });
 
 function doSearch(q) {
   if (!q) return;
-  const engine = ENGINES.find(e => e.id === state.engine) || ENGINES[0];
-  const url = q.startsWith('http') || q.includes('.') && !q.includes(' ')
-    ? (q.startsWith('http') ? q : 'https://' + q)
-    : engine.url + encodeURIComponent(q);
-
-  // update stats
-  state.blocks += Math.floor(Math.random() * 5) + 1;
-  state.dataSaved += Math.floor(Math.random() * 50) + 10;
-  state.timeSaved += Math.random() * 0.5;
-  save();
-  updateStats();
-
-  window.location.href = url;
+  const eng = ENGINES.find(e=>e.id===state.engine)||ENGINES[0];
+  const url = (q.startsWith('http')||(q.includes('.')&&!q.includes(' ')))
+    ? (q.startsWith('http') ? q : 'https://'+q)
+    : eng.url+encodeURIComponent(q);
+  state.blocks+=Math.floor(Math.random()*5)+1;
+  state.dataSaved+=Math.floor(Math.random()*50)+10;
+  state.timeSaved+=Math.random()*.5;
+  save(); updateStats();
+  window.location.href=url;
 }
 
-// ===== SHORTCUTS =====
+// ===================== EDIT MODE =====================
 let editMode = false;
-
 function setEditMode(val) {
   editMode = val;
-  const grid = document.getElementById('shortcuts-grid');
-  grid.classList.toggle('edit-mode', val);
+  document.body.classList.toggle('edit-mode', val);
+}
+
+// ===================== SHORTCUTS =====================
+const SC_W = 76, SC_H = 90; // approx size
+let floats = []; // array of DOM elements
+
+function posAddBtn() {
+  const btn = document.getElementById('add-shortcut');
+  btn.style.right  = '16px';
+  btn.style.bottom = '80px';
 }
 
 function renderShortcuts() {
-  const grid = document.getElementById('shortcuts-grid');
-  grid.innerHTML = state.shortcuts.map((s, i) => `
-    <div class="shortcut-wrap" data-i="${i}">
-      <button class="delete-btn" data-i="${i}">✕</button>
-      <a class="shortcut" href="${s.url}" data-i="${i}">
-        <div class="shortcut-icon"><img src="${getFaviconUrl(s.url)}" alt="${s.label}" onerror="this.style.display='none';this.parentNode.textContent='🔗'"></div>
-        <span>${s.label}</span>
-      </a>
-    </div>
-  `).join('') + `
-    <div class="shortcut shortcut-add" id="add-shortcut">
-      <div class="shortcut-icon">＋</div>
-      <span>เพิ่มใหม่</span>
-    </div>
-  `;
+  // remove old
+  floats.forEach(el => el.remove());
+  floats = [];
 
-  // delete buttons
-  grid.querySelectorAll('.delete-btn').forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.preventDefault(); e.stopPropagation();
-      const i = parseInt(btn.dataset.i);
-      state.shortcuts.splice(i, 1);
-      save();
+  state.shortcuts.forEach((s, i) => {
+    const el = document.createElement('div');
+    el.className = 'shortcut-float';
+    el.innerHTML = `
+      <button class="del-btn">✕</button>
+      <div class="sc-icon"><img src="${getFavicon(s.url)}" alt="${s.label}" onerror="this.style.display='none';this.parentNode.textContent='🔗'"></div>
+      <div class="sc-label">${s.label}</div>
+    `;
+
+    // position
+    const pos = fxToPx(s.x ?? 0.05, s.y ?? (0.3 + i*0.13), SC_W, SC_H);
+    el.style.left = pos.x + 'px';
+    el.style.top  = pos.y + 'px';
+
+    document.body.appendChild(el);
+    floats.push(el);
+
+    // ---- delete ----
+    el.querySelector('.del-btn').addEventListener('click', e => {
+      e.stopPropagation();
+      state.shortcuts.splice(i, 1); save();
       renderShortcuts();
-      if (state.shortcuts.length === 0) setEditMode(false);
+      if (!state.shortcuts.length) setEditMode(false);
     });
-  });
 
-  // double tap / double click to toggle edit mode
-  grid.querySelectorAll('.shortcut:not(.shortcut-add)').forEach(el => {
-    let lastTap = 0;
-    el.addEventListener('click', e => {
-      if (editMode) { e.preventDefault(); return; }
-    });
-    el.addEventListener('touchend', e => {
-      const now = Date.now();
-      if (now - lastTap < 350) {
-        e.preventDefault();
-        setEditMode(true);
+    // ---- tap / double-tap / drag ----
+    let tapTimer = null, lastTap = 0;
+    let dragging = false, dragMoved = false;
+    let startX, startY, origLeft, origTop;
+
+    function getXY(e) {
+      if (e.touches) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      return { x: e.clientX, y: e.clientY };
+    }
+
+    function onDown(e) {
+      if (e.target.classList.contains('del-btn')) return;
+      const {x, y} = getXY(e);
+      startX = x; startY = y;
+      origLeft = parseFloat(el.style.left);
+      origTop  = parseFloat(el.style.top);
+      dragging = true; dragMoved = false;
+      el.setPointerCapture && e.pointerId != null && el.setPointerCapture(e.pointerId);
+    }
+
+    function onMove(e) {
+      if (!dragging) return;
+      const {x, y} = getXY(e);
+      const dx = x - startX, dy = y - startY;
+      if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+        dragMoved = true;
+        if (editMode) {
+          const nx = Math.min(Math.max(origLeft + dx, 0), window.innerWidth  - SC_W);
+          const ny = Math.min(Math.max(origTop  + dy, 0), window.innerHeight - SC_H);
+          el.style.left = nx + 'px';
+          el.style.top  = ny + 'px';
+          el.classList.add('dragging');
+        }
       }
-      lastTap = now;
-    });
-    el.addEventListener('dblclick', e => {
       e.preventDefault();
-      setEditMode(true);
-    });
+    }
+
+    function onUp(e) {
+      if (!dragging) return;
+      dragging = false;
+      el.classList.remove('dragging');
+
+      if (dragMoved && editMode) {
+        // save new fractional position
+        state.shortcuts[i].x = parseFloat(el.style.left)  / window.innerWidth;
+        state.shortcuts[i].y = parseFloat(el.style.top)   / window.innerHeight;
+        save();
+        return;
+      }
+
+      // tap logic
+      if (!dragMoved) {
+        if (editMode) return; // in edit mode taps do nothing
+
+        const now = Date.now();
+        if (now - lastTap < 400) {
+          clearTimeout(tapTimer); tapTimer = null; lastTap = 0;
+          setEditMode(true);
+        } else {
+          lastTap = now;
+          tapTimer = setTimeout(() => {
+            tapTimer = null; lastTap = 0;
+            window.location.href = s.url;
+          }, 400);
+        }
+      }
+    }
+
+    // pointer events (works for both mouse and touch)
+    el.addEventListener('pointerdown',  onDown,  { passive: false });
+    el.addEventListener('pointermove',  onMove,  { passive: false });
+    el.addEventListener('pointerup',    onUp);
+    el.addEventListener('pointercancel',() => { dragging=false; el.classList.remove('dragging'); });
   });
 
-  document.getElementById('add-shortcut').addEventListener('click', () => {
-    setEditMode(false);
-    addShortcut();
-  });
+  posAddBtn();
 }
 
-// tap/click outside shortcuts to exit edit mode
-document.addEventListener('click', e => {
-  if (editMode && !e.target.closest('#shortcuts-grid')) setEditMode(false);
-});
-document.addEventListener('touchend', e => {
-  if (editMode && !e.target.closest('#shortcuts-grid')) setEditMode(false);
-});
-
-function addShortcut() {
-  const label = prompt('ชื่อ shortcut:');
-  if (!label) return;
-  const url = prompt('URL: (เช่น https://example.com)');
-  if (!url) return;
-  const fullUrl = url.startsWith('http') ? url : 'https://' + url;
-  state.shortcuts.push({ label, url: fullUrl });
-  save();
-  renderShortcuts();
-}
-renderShortcuts();
-
-// ===== STATS =====
-function updateStats() {
-  document.getElementById('stat-blocks').textContent = state.blocks.toLocaleString();
-  const kb = state.dataSaved;
-  document.getElementById('stat-data').textContent = kb > 1024 ? (kb/1024).toFixed(1)+' MB' : kb+' KB';
-  const t = state.timeSaved;
-  document.getElementById('stat-time').textContent = t < 1 ? Math.round(t*1000)+'ms' : t.toFixed(1)+'s';
-}
-updateStats();
-</script>
-</body>
-</html>
+// add shortcut btn
+document.getElementById('add-shortcut').addEventListener('click', () => {
+  setEditMode(false);
+  cons
